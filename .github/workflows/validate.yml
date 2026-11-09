@@ -19,19 +19,19 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: 取得 PR 合併後的內容
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: pr
           fetch-depth: 0
           persist-credentials: false
       # 檢查工具一律用 base 分支上的版本，PR 無法修改自己的檢查規則
       - name: 取得 base 分支的檢查工具
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: tools
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       - name: 選擇檢查工具
@@ -57,11 +57,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm

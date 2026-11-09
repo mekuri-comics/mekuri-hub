@@ -6,8 +6,9 @@ import { validateManifest, mainOf, isSafeRelativePath } from './manifest.mjs';
 
 export const MAX_PACKAGE_BYTES = 50 * 1024 * 1024;
 export const PACKAGE_EXT = '.mekuri-plugin';
-// 固定時間戳，讓同樣內容打包出同樣的 sha256
-const FIXED_MTIME = new Date('2000-01-01T00:00:00Z');
+// 固定時間戳，讓同樣內容打包出同樣的 sha256。
+// ZIP 的時間欄位是「當地時間」，所以用當地時間建立 Date，在任何時區都會寫入 2000-01-01 00:00。
+const FIXED_MTIME = new Date(2000, 0, 1, 0, 0, 0);
 
 export function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');

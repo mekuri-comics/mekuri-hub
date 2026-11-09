@@ -1,6 +1,6 @@
 {
   "apiVersion": 1,
-  "generatedAt": "2026-11-09T18:36:11.120Z",
+  "generatedAt": "2026-11-09T18:47:19.147Z",
   "plugins": [
     {
       "id": "io.github.mekuri.example",
@@ -18,8 +18,8 @@
       ],
       "icon": null,
       "package": "https://raw.githubusercontent.com/mekuri-comics/mekuri-hub/main/plugins/io.github.mekuri.example/1.0.0.mekuri-plugin",
-      "sha256": "a6ef9f4b24a157b7d2624cd36bd0f1dae6ad010cfcd135ee391e88858e4ce1c8",
-      "updatedAt": "2026-11-09T18:36:11.120Z"
+      "sha256": "375ca7df0537eeeb1a4a646d25f62c5572d356194acf2269aeebff0fd4569672",
+      "updatedAt": "2026-11-09T18:45:59.000Z"
     }
   ]
 }

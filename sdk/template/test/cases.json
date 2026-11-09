@@ -1,0 +1,39 @@
+{
+  "description": "以假 HTTP 回應執行 example-source。host 必須攔截 mekuri.http.request，依 url 回傳 responses 中的內容；未列出的 url 回 404。",
+  "responses": {
+    "https://example.test/search?q=%E6%B5%B7&p=1": {
+      "status": 200, "contentType": "text/html",
+      "body": "<div class='result' data-id='42'><img src='/c/42.jpg'><span class='title'> 海之歌 </span></div><div class='result' data-id='7'><img src='https://a.img.example.test/7.jpg'><span class='title'>海邊</span></div><a class='next' href='?p=2'>next</a>"
+    },
+    "https://example.test/api/works/42": {
+      "status": 200, "contentType": "application/json",
+      "body": "{\"title\":\"海之歌\",\"author\":\"作者甲\",\"cover\":\"https://a.img.example.test/42.jpg\",\"chapters\":[{\"id\":\"c1\",\"name\":\"第1話\",\"no\":1},{\"id\":\"c2\",\"name\":\"第2話\",\"no\":2}]}"
+    },
+    "https://example.test/api/chapters/42/c1": {
+      "status": 200, "contentType": "application/json",
+      "body": "{\"images\":[\"https://a.img.example.test/42/c1/1.jpg\",\"https://a.img.example.test/42/c1/2.jpg\"]}"
+    },
+    "https://example.test/api/me": {
+      "status": 200, "contentType": "application/json", "body": "{\"loggedIn\":true}"
+    }
+  },
+  "cases": [
+    { "call": "search", "args": ["海", 1], "expect": { "items": [
+        { "workKey": "42", "title": "海之歌", "coverUrl": "https://example.test/c/42.jpg" },
+        { "workKey": "7", "title": "海邊", "coverUrl": "https://a.img.example.test/7.jpg" }
+      ], "hasMore": true } },
+    { "call": "getWork", "args": ["42"], "expect": { "workKey": "42", "title": "海之歌", "author": "作者甲", "coverUrl": "https://a.img.example.test/42.jpg", "url": "https://example.test/works/42" } },
+    { "call": "getChapters", "args": ["42"], "expect": [
+        { "chapterKey": "42/c1", "title": "第1話", "number": 1 },
+        { "chapterKey": "42/c2", "title": "第2話", "number": 2 }
+      ] },
+    { "call": "getPages", "args": ["42/c1"], "expect": [
+        { "url": "https://a.img.example.test/42/c1/1.jpg", "headers": { "Referer": "https://example.test/" } },
+        { "url": "https://a.img.example.test/42/c1/2.jpg", "headers": { "Referer": "https://example.test/" } }
+      ] },
+    { "call": "checkLogin", "args": [], "expect": true },
+    { "name": "未授權網域被拒", "eval": "await mekuri.http.request({ url: 'https://evil.test/' })", "expectError": "PLUGIN_DOMAIN_DENIED" },
+    { "name": "http 協定被拒", "eval": "await mekuri.http.request({ url: 'http://example.test/' })", "expectError": "PLUGIN_DOMAIN_DENIED" },
+    { "name": "無窮迴圈逾時", "eval": "while (true) {}", "expectError": "PLUGIN_TIMEOUT", "timeoutOverrideMs": 1000 }
+  ]
+}

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 上架政策
+    url: https://github.com/mekuri-comics/mekuri-hub/blob/main/POLICY.md
+    about: 哪些插件可以上架、哪些不行。
+  - name: 插件 SDK 與教學
+    url: https://github.com/mekuri-comics/mekuri-hub/blob/main/sdk/README.md
+    about: 從零開始撰寫、測試與發佈插件。

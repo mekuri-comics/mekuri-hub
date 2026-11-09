@@ -1,0 +1,76 @@
+name: 插件驗證
+
+# 每個 PR（任何目標分支）都會執行。規則說明見 sdk/README.md「集散地 CI 檢查什麼」。
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  plugins:
+    name: 插件檢查
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 取得 PR 合併後的內容
+        uses: actions/checkout@v4
+        with:
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+      # 檢查工具一律用 base 分支上的版本，PR 無法修改自己的檢查規則
+      - name: 取得 base 分支的檢查工具
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: tools
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 選擇檢查工具
+        run: |
+          if [ -f tools/scripts/validate-pr.mjs ] && [ -f tools/package-lock.json ]; then
+            echo "TOOLS=tools" >> "$GITHUB_ENV"
+          else
+            echo "::notice::base 分支還沒有檢查工具（初次建立集散地），改用 PR 內的工具。"
+            echo "TOOLS=pr" >> "$GITHUB_ENV"
+          fi
+      - name: 安裝檢查工具
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: ${{ env.TOOLS }}
+      - name: 驗證插件
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_AUTHOR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
+        run: node "$TOOLS/scripts/validate-pr.mjs" --repo pr --base "$BASE_SHA"
+
+  sdk:
+    name: SDK 與腳本測試
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: 測試（manifest 規則、沙盒、測試工具、PR 規則、index.json、範本）
+        run: npm test
+      - name: 範本型別檢查
+        run: npm run typecheck
+      - name: 範例插件包是最新的
+        run: node scripts/build-example.mjs --check
+      - name: 範例插件通過 example-source 案例
+        run: npx mekuri-plugin test sdk/examples/example-source

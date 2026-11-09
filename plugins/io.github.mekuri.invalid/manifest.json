@@ -1,0 +1,11 @@
+{
+  "id": "io.github.mekuri.invalid",
+  "name": "Invalid",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "author": "mekuri",
+  "description": "故意不合法的測試插件（domains 為 *）",
+  "domains": [
+    "*"
+  ]
+}

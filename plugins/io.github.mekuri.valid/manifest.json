@@ -1,0 +1,12 @@
+{
+  "id": "io.github.mekuri.valid",
+  "name": "Valid",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "author": "mekuri",
+  "description": "合法的測試插件（對應 example.test）",
+  "domains": [
+    "example.test",
+    "*.img.example.test"
+  ]
+}

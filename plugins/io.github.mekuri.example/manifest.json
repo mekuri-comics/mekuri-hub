@@ -1,0 +1,24 @@
+{
+  "id": "io.github.mekuri.example",
+  "name": "Example Source",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "author": "mekuri",
+  "description": "一致性測試用的範例插件，對應假網站 example.test。",
+  "main": "index.js",
+  "tags": [
+    "manga",
+    "example"
+  ],
+  "domains": [
+    "example.test",
+    "*.img.example.test"
+  ],
+  "readingDirection": "rtl",
+  "login": {
+    "url": "https://example.test/login",
+    "cookieNames": [
+      "session"
+    ]
+  }
+}

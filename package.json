@@ -1,0 +1,22 @@
+{
+  "name": "mekuri-hub",
+  "private": true,
+  "description": "mekuri 插件集散地：CI 腳本與插件 SDK",
+  "type": "module",
+  "workspaces": [
+    "sdk"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test --test-reporter=spec \"test/*.test.mjs\"",
+    "typecheck": "tsc --noEmit -p sdk/template",
+    "validate:pr": "node scripts/validate-pr.mjs",
+    "build:index": "node scripts/build-index.mjs",
+    "build:example": "node scripts/build-example.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "description": "manifest 驗證。valid=true 表示可安裝；否則 error 為 INVALID_INPUT，field 指出第一個錯誤欄位。",
+  "base": {
+    "id": "io.github.example.source",
+    "name": "Example Source",
+    "version": "1.0.0",
+    "apiVersion": 1,
+    "author": "example",
+    "description": "示範插件",
+    "domains": ["example.com", "*.cdn.example.com"]
+  },
+  "cases": [
+    { "name": "合法", "patch": {}, "valid": true },
+    { "name": "id 有大寫", "patch": { "id": "io.github.Example.source" }, "valid": false, "field": "id" },
+    { "name": "id 不是反向網域", "patch": { "id": "example" }, "valid": false, "field": "id" },
+    { "name": "版本不是 semver", "patch": { "version": "1.0" }, "valid": false, "field": "version" },
+    { "name": "apiVersion 不支援", "patch": { "apiVersion": 2 }, "valid": false, "field": "apiVersion" },
+    { "name": "domains 為空", "patch": { "domains": [] }, "valid": false, "field": "domains" },
+    { "name": "domains 含萬用字元 *", "patch": { "domains": ["*"] }, "valid": false, "field": "domains" },
+    { "name": "domains 含 IP", "patch": { "domains": ["192.168.1.2"] }, "valid": false, "field": "domains" },
+    { "name": "domains 含 localhost", "patch": { "domains": ["localhost"] }, "valid": false, "field": "domains" },
+    { "name": "domains 含協定或路徑", "patch": { "domains": ["https://example.com/a"] }, "valid": false, "field": "domains" },
+    { "name": "login.url 不在 domains 內", "patch": { "login": { "url": "https://evil.test/login" } }, "valid": false, "field": "login.url" },
+    { "name": "login.url 在子網域萬用字元內", "patch": { "login": { "url": "https://img.cdn.example.com/login" } }, "valid": true },
+    { "name": "readingDirection 非法", "patch": { "readingDirection": "ttb" }, "valid": false, "field": "readingDirection" }
+  ],
+  "domainMatch": [
+    { "pattern": "example.com", "host": "example.com", "match": true },
+    { "pattern": "example.com", "host": "www.example.com", "match": false },
+    { "pattern": "*.cdn.example.com", "host": "a.cdn.example.com", "match": true },
+    { "pattern": "*.cdn.example.com", "host": "a.b.cdn.example.com", "match": true },
+    { "pattern": "*.cdn.example.com", "host": "cdn.example.com", "match": false },
+    { "pattern": "*.cdn.example.com", "host": "evilcdn.example.com", "match": false },
+    { "pattern": "example.com", "host": "example.com.evil.test", "match": false }
+  ]
+}

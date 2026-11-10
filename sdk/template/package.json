@@ -1,0 +1,17 @@
+{
+  "name": "mekuri-plugin-template",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "mekuri-plugin build",
+    "typecheck": "tsc --noEmit",
+    "test": "mekuri-plugin test",
+    "pack:plugin": "mekuri-plugin pack",
+    "validate": "mekuri-plugin validate"
+  },
+  "devDependencies": {
+    "@mekuri/plugin-sdk": "file:..",
+    "typescript": "5.9.3"
+  }
+}

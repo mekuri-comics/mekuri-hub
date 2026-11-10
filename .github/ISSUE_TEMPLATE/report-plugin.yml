@@ -1,0 +1,54 @@
+name: 檢舉插件
+description: 檢舉違反上架政策的插件（盜版來源、繞過 DRM／付費牆、惡意行為等），或權利人提出下架請求。
+title: "[檢舉] "
+labels: ["report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝你協助維護集散地。處理流程與時限見 [REPORTING.md](https://github.com/mekuri-comics/mekuri-hub/blob/main/REPORTING.md)。
+        **issue 是公開的：** 請不要附上漫畫圖片、帳號密碼、Cookie 或其他個人資料。需要私下提供資料時，在下方註明，維護者會與你聯絡。
+  - type: input
+    id: plugin-id
+    attributes:
+      label: 插件 id
+      description: 例如 io.github.alice.example（見 plugins/ 目錄或 index.json）
+      placeholder: io.github.alice.example
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      description: 選填；不確定可以留空
+  - type: dropdown
+    id: reason
+    attributes:
+      label: 檢舉原因
+      options:
+        - 盜版或未經授權散布作品的來源
+        - 繞過 DRM、付費牆或其他存取限制
+        - 惡意行為（蒐集個資、連到未說明的網域、與說明不符等）
+        - 侵害我的權利（權利人下架請求）
+        - 其他違反上架政策的情形
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: 說明與證據
+      description: 具體說明違反了哪一條政策，附上可以查證的連結或說明。權利人請說明你代表的作品與權利。
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: 聯絡方式
+      description: 選填；需要私下聯絡時填寫（會公開顯示）
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 確認
+      options:
+        - label: 我確認以上內容據實，且沒有附上漫畫圖片或他人的個人資料。
+          required: true

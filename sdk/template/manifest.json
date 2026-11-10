@@ -1,0 +1,14 @@
+{
+  "id": "io.github.yourname.example",
+  "name": "我的插件",
+  "version": "0.1.0",
+  "apiVersion": 1,
+  "author": "yourname",
+  "description": "插件範本：對應不存在的示範網站 example.test。",
+  "icon": "icon.svg",
+  "main": "index.js",
+  "tags": ["manga", "example"],
+  "domains": ["example.test", "*.img.example.test"],
+  "readingDirection": "rtl",
+  "login": { "url": "https://example.test/login", "cookieNames": ["session"] }
+}

@@ -1,0 +1,64 @@
+name: 更新 index.json
+
+# 推送到 main 且插件有變動時，重新產生 index.json 與插件圖示並提交。
+# 不會無限循環：GITHUB_TOKEN 推送的 commit 不會觸發 workflow，commit 訊息也帶 [skip ci]；
+# 內容沒變時（例如只改了 index.json）build-index 不會寫檔，也就不會提交。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/**"
+      - "scripts/**"
+      - "sdk/lib/**"
+      - ".github/workflows/index.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: index-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  index:
+    name: 產生 index.json
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: 產生 index.json
+        run: node scripts/build-index.mjs
+      - name: 提交變更
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          git add -A index.json plugins
+          if git diff --cached --quiet; then
+            echo "index.json 沒有變動"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: 更新 index.json [skip ci]"
+          for i in 1 2 3; do
+            if git push origin "HEAD:$BRANCH"; then
+              echo "### 已更新 index.json" >> "$GITHUB_STEP_SUMMARY"
+              git show --stat HEAD >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            git pull --rebase origin "$BRANCH"
+            node scripts/build-index.mjs
+            git add -A index.json plugins
+            git diff --cached --quiet || git commit --amend --no-edit
+          done
+          echo "::error::推送 index.json 失敗（main 若有分支保護，需允許 github-actions 推送）"
+          exit 1

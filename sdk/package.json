@@ -1,0 +1,41 @@
+{
+  "name": "@mekuri/plugin-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "mekuri 插件 SDK：型別、範本、打包與本機測試工具",
+  "license": "MIT",
+  "type": "module",
+  "types": "plugin-api.d.ts",
+  "bin": {
+    "mekuri-plugin": "bin/mekuri-plugin.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./plugin-api.d.ts",
+      "default": "./lib/index.mjs"
+    },
+    "./sandbox-globals": {
+      "types": "./sandbox-globals.d.ts"
+    },
+    "./lib/*": "./lib/*",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "esbuild": "0.28.1",
+    "fflate": "0.8.3",
+    "node-html-parser": "9.0.4",
+    "quickjs-emscripten": "0.31.0"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "template",
+    "plugin-api.d.ts",
+    "sandbox-globals.d.ts",
+    "LICENSE",
+    "README.md"
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "description": "已下架的插件紀錄（REPORTING.md）。列在這裡的 id 不接受重新上架，CI 會拒絕。欄位：id、reason（原因）、issue（檢舉 issue 連結）、date（YYYY-MM-DD）。",
+  "plugins": []
+}
